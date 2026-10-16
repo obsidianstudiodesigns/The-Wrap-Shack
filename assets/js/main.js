@@ -125,8 +125,21 @@
   var canvas = document.querySelector("[data-embers]");
   if (canvas && !reduceMotion && canvas.getContext) {
     var ctx = canvas.getContext("2d");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = 0, h = 0, sparks = [], running = false, raf = 0;
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var w = 0, h = 0, sparks = [], running = false, raf = 0, lastT = 0;
+
+    // The glow is drawn once into a sprite; each frame only copies it.
+    // (Per-spark shadowBlur cost ~50ms a frame on desktop.)
+    var sprite = document.createElement("canvas");
+    sprite.width = sprite.height = 32;
+    var sctx = sprite.getContext("2d");
+    var g = sctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+    g.addColorStop(0, "rgba(255,226,150,1)");
+    g.addColorStop(0.18, "rgba(255,170,60,0.95)");
+    g.addColorStop(0.45, "rgba(255,90,40,0.35)");
+    g.addColorStop(1, "rgba(255,90,40,0)");
+    sctx.fillStyle = g;
+    sctx.fillRect(0, 0, 32, 32);
 
     function size() {
       var r = canvas.getBoundingClientRect();
@@ -148,31 +161,35 @@
         t: Math.random() * Math.PI * 2
       };
     }
-    function frame() {
+    function frame(now) {
+      // Scale movement by elapsed time so speed is the same at 60Hz, 120Hz or a dropped frame.
+      var step = lastT ? Math.min((now - lastT) / 16.667, 3) : 1;
+      lastT = now;
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = "lighter";
       for (var i = 0; i < sparks.length; i++) {
         var s = sparks[i];
-        s.t += 0.02;
-        s.y -= s.vy;
-        s.x += s.vx + Math.sin(s.t) * 0.25;
-        var fade = Math.max(0, Math.min(1, s.y / h)) * s.life;
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(255," + (120 + Math.round(s.r * 40)) + ",40," + fade.toFixed(3) + ")";
-        ctx.shadowColor = "rgba(255,90,40,0.9)";
-        ctx.shadowBlur = 8;
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fill();
+        s.t += 0.02 * step;
+        s.y -= s.vy * step;
+        s.x += (s.vx + Math.sin(s.t) * 0.25) * step;
+        ctx.globalAlpha = Math.max(0, Math.min(1, s.y / h)) * s.life;
+        var d = s.r * 7;
+        ctx.drawImage(sprite, s.x - d / 2, s.y - d / 2, d, d);
         if (s.y < -10) sparks[i] = spawn(false);
       }
+      ctx.globalAlpha = 1;
       raf = requestAnimationFrame(frame);
     }
+    function start() { cancelAnimationFrame(raf); lastT = 0; if (running) raf = requestAnimationFrame(frame); }
     size();
-    window.addEventListener("resize", function () { cancelAnimationFrame(raf); size(); if (running) raf = requestAnimationFrame(frame); });
+    var resizeTimer = 0;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () { size(); start(); }, 150);
+    });
     new IntersectionObserver(function (entries) {
       running = entries[0].isIntersecting;
-      cancelAnimationFrame(raf);
-      if (running) raf = requestAnimationFrame(frame);
+      start();
     }).observe(canvas);
   }
 })();
