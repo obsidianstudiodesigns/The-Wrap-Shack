@@ -1,0 +1,230 @@
+"""Write the legal pages and 404 page from one shared template.
+
+Run from the project root:  python tools/make-pages.py
+Edit the page bodies below, then re-run.
+"""
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+BASE = "https://obsidianstudiodesigns.github.io/The-Wrap-Shack/"
+UPDATED = "16 October 2026"
+
+HEAD = """<!doctype html>
+<html lang="en-ZA">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{title} | The Wrap Shack</title>
+  <meta name="description" content="{desc}">
+  {canonical}
+  <meta name="theme-color" content="#140D0B">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Wrap Shack">
+  <meta property="og:locale" content="en_ZA">
+  <meta property="og:title" content="{title} | The Wrap Shack">
+  <meta property="og:description" content="{desc}">
+  <meta property="og:image" content="{base}og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=1">
+</head>
+<body>
+  <header class="site-header legal-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="./" aria-label="The Wrap Shack, home page">
+        <img src="assets/img/badge.webp" alt="" width="44" height="44">
+        <span class="brand-word"><small>The</small>Wrap Shack</span>
+      </a>
+      <a class="btn btn-primary btn-sm" href="https://wa.me/27740808080" target="_blank" rel="noopener"><i class="ph-fill ph-whatsapp-logo" aria-hidden="true"></i>WhatsApp us</a>
+    </div>
+  </header>
+"""
+
+FOOT = """
+  <footer class="site-footer">
+    <div class="wrap footer-base" style="margin-top:0;border-top:0;padding-top:0">
+      <p>© <span data-year>2026</span> The Wrap Shack. All rights reserved.</p>
+      <nav class="legal-nav" aria-label="Legal">
+        <a href="privacy.html"{cur_privacy}>Privacy policy</a>
+        <a href="terms.html"{cur_terms}>Terms of use</a>
+      </nav>
+      <p class="credit">Website designed by <a href="https://obsidianstudiodesigns.co.za/" target="_blank" rel="noopener">Obsidian Studio Designs</a></p>
+    </div>
+  </footer>
+  <script>document.querySelectorAll('[data-year]').forEach(function (e) {{ e.textContent = new Date().getFullYear(); }});</script>
+</body>
+</html>
+"""
+
+CONTACT = """<dl>
+      <dt>Business</dt><dd>The Wrap Shack</dd>
+      <dt>Contact</dt><dd>Chris</dd>
+      <dt>Where</dt><dd>Swartkoppies Road, Rispark, near Mall of the South, Johannesburg South, Gauteng, South Africa</dd>
+      <dt>WhatsApp and phone</dt><dd><a href="tel:+27740808080">074 080 8080</a></dd>
+      <dt>Facebook</dt><dd><a href="https://www.facebook.com/profile.php?id=100090083404802" target="_blank" rel="noopener">TheWrap Shack</a></dd>
+      <dt>Website</dt><dd><a href="./">obsidianstudiodesigns.github.io/The-Wrap-Shack</a></dd>
+    </dl>"""
+
+PAGES = {
+    "privacy.html": dict(
+        title="Privacy policy",
+        desc="How The Wrap Shack collects, uses and protects your personal information under the Protection of Personal Information Act (POPIA).",
+        body=f"""
+    <p class="lead">This policy explains how The Wrap Shack ("we", "us") collects, uses and protects your personal information, in line with the Protection of Personal Information Act 4 of 2013 (POPIA).</p>
+
+    <h2>Who we are</h2>
+    {CONTACT}
+    <p>The owner of The Wrap Shack is our Information Officer under POPIA. Contact them on the details above about anything in this policy.</p>
+
+    <h2>What we collect</h2>
+    <p>We only collect the information you choose to give us when you order, ask a question or enquire about a function, such as:</p>
+    <ul>
+      <li>your name and cellphone number (WhatsApp shares your number with us when you message us)</li>
+      <li>what you would like to order</li>
+      <li>for function bookings: the event date, number of guests, venue or area, and any notes you add</li>
+      <li>anything else you include in your message, such as allergies or dietary needs</li>
+    </ul>
+
+    <h2>How the order and booking buttons work</h2>
+    <p>This website has no online ordering system and no database. The "Order on WhatsApp" buttons and the function booking form only open WhatsApp on your device with a message already written. Nothing is sent to us unless you press send in WhatsApp yourself. The booking form does not store what you type.</p>
+
+    <h2>Why we use it</h2>
+    <ul>
+      <li>to take and prepare your order and tell you when it is ready</li>
+      <li>to quote for and arrange a function or event</li>
+      <li>to answer your questions</li>
+      <li>to keep the records the law requires</li>
+    </ul>
+    <p>We do not sell, rent or trade your personal information, and we will not add you to any marketing list unless you ask us to.</p>
+
+    <h2>Who we share it with</h2>
+    <p>We only share your information when we need to, for example with an event organiser or venue when we trade at your function, or when the law requires it. WhatsApp and Facebook (Meta) carry our messages under their own privacy policies.</p>
+
+    <h2>This website, cookies and third parties</h2>
+    <p>This website does not set its own cookies and does not use analytics or advertising trackers. To load, your browser fetches files from these providers, which may record your IP address and browser details in their standard server logs:</p>
+    <ul>
+      <li>GitHub Pages, which hosts this website</li>
+      <li>Google Fonts, which supplies the typefaces</li>
+      <li>jsDelivr, which supplies the icons</li>
+      <li>Google Maps, which shows the map in the "Find the Shack" section and may set its own cookies</li>
+    </ul>
+    <p>Links to WhatsApp, Facebook and Google Maps take you to services with their own privacy policies.</p>
+
+    <h2>How long we keep it</h2>
+    <p>We keep order and booking messages only as long as we need them to fill your order or run your event. Records of sales are kept for as long as tax law requires, usually five years, and then deleted.</p>
+
+    <h2>How we protect it</h2>
+    <p>We take reasonable steps to keep your information safe, including keeping it on password-protected devices and accounts and only sharing it when needed.</p>
+
+    <h2>Your rights</h2>
+    <p>Under POPIA you may:</p>
+    <ul>
+      <li>ask what personal information we hold about you</li>
+      <li>ask us to correct or delete it</li>
+      <li>object to us using it</li>
+      <li>withdraw consent you have given</li>
+    </ul>
+    <p>Contact us on the details above and we will respond within a reasonable time. If you are unhappy with how we handle your information, you may complain to the Information Regulator of South Africa at <a href="https://inforegulator.org.za" target="_blank" rel="noopener">inforegulator.org.za</a>.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>We may update this policy from time to time. The date at the top shows when it last changed.</p>
+"""),
+    "terms.html": dict(
+        title="Terms of use",
+        desc="Terms for using The Wrap Shack website and ordering food or booking a function: menu, prices, orders, payment, events, allergens and liability.",
+        body=f"""
+    <p class="lead">These terms apply to this website and to orders and function bookings made through it. By using the website or sending us an order you agree to them.</p>
+
+    <h2>About us</h2>
+    <p>As required by section 43 of the Electronic Communications and Transactions Act 25 of 2002 (ECTA):</p>
+    {CONTACT}
+    <!-- TO CONFIRM with the client: legal status (sole proprietor or company and registration number), full street address for legal notices, VAT number if registered -->
+
+    <h2>Menu and photos</h2>
+    <p>Our menu changes with what is available. Some photos on this website are styled or illustrative and show a typical example of a dish, so what you get may look a little different. Every item is offered in beef or chicken, and selected items in lamb, while stock lasts.</p>
+
+    <h2>Prices</h2>
+    <p>Prices are in South African rand and are not listed on this website because they can change. The price that applies is the one we confirm to you when you order, in person or on WhatsApp.</p>
+
+    <h2>Placing an order</h2>
+    <ul>
+      <li>Sending us a WhatsApp message is an order request. Your order is accepted only when we reply to confirm it.</li>
+      <li>If an item or option is sold out, we will tell you and offer an alternative.</li>
+      <li>Orders are prepared fresh. Please collect at the time we agree so your food is hot.</li>
+    </ul>
+
+    <h2>Payment</h2>
+    <!-- TO CONFIRM with the client: accepted payment methods (cash, card, EFT, SnapScan) -->
+    <p>Payment is made when you collect your order, or by a method we agree with you. We will never ask for your card details on WhatsApp.</p>
+
+    <h2>Functions and events</h2>
+    <ul>
+      <li>The booking form gives us your details so we can send a quote. A booking is only confirmed once we agree the date, menu, numbers, price and any deposit in writing.</li>
+      <li>Travel costs may apply outside our usual area.</li>
+      <li>If you need to change or cancel a confirmed booking, tell us as soon as possible. Any deposit terms will be set out in your quote and will be fair and reasonable as the Consumer Protection Act 68 of 2008 requires.</li>
+    </ul>
+
+    <h2>Allergies and dietary needs</h2>
+    <p>Our food is prepared in a kitchen and on grills that handle meat, dairy, gluten, eggs, mustard and other allergens. We cannot guarantee any dish is free of an allergen. Please tell us about allergies when you order and we will help you choose.</p>
+
+    <h2>Food quality</h2>
+    <p>If something is wrong with your order, tell us straight away and we will put it right. Nothing in these terms limits your rights under the Consumer Protection Act.</p>
+
+    <h2>Use of this website</h2>
+    <p>The content, logo, photos and design of this website belong to The Wrap Shack and its designers. You may not copy or reuse them without permission. We try to keep the information here correct and up to date, including where we are trading, but we do not guarantee that it is complete or free of errors. Check our Facebook page or WhatsApp us for the latest trading spots.</p>
+    <p>This website links to WhatsApp, Facebook, Google Maps and other services. We are not responsible for their content or how they work.</p>
+
+    <h2>Your information</h2>
+    <p>How we handle personal information is set out in our <a href="privacy.html">privacy policy</a>.</p>
+
+    <h2>Law</h2>
+    <p>These terms are governed by the laws of the Republic of South Africa. Nothing in them limits your rights under the Consumer Protection Act or ECTA.</p>
+"""),
+}
+
+for name, page in PAGES.items():
+    cur = {k: "" for k in ("cur_privacy", "cur_terms")}
+    cur["cur_" + name.split(".")[0]] = ' aria-current="page"'
+    html = HEAD.format(title=page["title"], desc=page["desc"], base=BASE,
+                       canonical=f'<link rel="canonical" href="{BASE}{name}">')
+    html += f"""
+  <main class="legal-main" id="main">
+    <a class="back-link" href="./"><i class="ph ph-arrow-left" aria-hidden="true"></i> Back to The Wrap Shack</a>
+    <h1>{page["title"]}</h1>
+    <p class="updated">Last updated: {UPDATED}</p>
+{page["body"]}  </main>
+"""
+    html += FOOT.format(**cur)
+    (ROOT / name).write_text(html, encoding="utf-8")
+
+# 404
+html = HEAD.format(title="Page not found", desc="This page could not be found. Head back to The Wrap Shack menu.", base=BASE,
+                   canonical='<meta name="robots" content="noindex">')
+# GitHub Pages serves 404.html from any path, so links must be absolute.
+html = html.replace('href="favicon', f'href="{BASE}favicon').replace('href="apple-touch', f'href="{BASE}apple-touch') \
+           .replace('href="site.webmanifest"', f'href="{BASE}site.webmanifest"').replace('href="assets/', f'href="{BASE}assets/') \
+           .replace('src="assets/', f'src="{BASE}assets/').replace('href="./', f'href="{BASE}')
+html += f"""
+  <main class="notfound" id="main">
+    <div>
+      <h1>404</h1>
+      <p>This page got eaten. The shawarmas are still here though.</p>
+      <a class="btn btn-primary" href="{BASE}#menu">See the menu</a>
+    </div>
+  </main>
+"""
+html += FOOT.format(cur_privacy="", cur_terms="").replace('href="privacy.html"', f'href="{BASE}privacy.html"') \
+                                                  .replace('href="terms.html"', f'href="{BASE}terms.html"')
+(ROOT / "404.html").write_text(html, encoding="utf-8")
+print("pages written")
